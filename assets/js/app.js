@@ -1,5 +1,9 @@
 import { naturalWonders } from './data.js';
 
+/**
+ * Main application logic for the African Odyssey map.
+ * Handles map initialization, marker creation, and user interactions.
+ */
 document.addEventListener('DOMContentLoaded', () => {
   const welcomeOverlay = document.getElementById('welcome-overlay');
   const infoPanel = document.getElementById('info-panel');
@@ -40,16 +44,22 @@ document.addEventListener('DOMContentLoaded', () => {
       isAnimating = false;
     });
 
+    /**
+     * Adds markers to the map based on the data.
+     */
     const addMarkers = () => {
       naturalWonders.forEach((wonder, index) => {
+        // FIX: SEC-002 - Create element programmatically to avoid unsafe-inline styles in innerHTML
+        const markerBtn = document.createElement('button');
+        markerBtn.type = 'button';
+        markerBtn.className = 'custom-marker';
+        markerBtn.style.setProperty('--marker-delay', `${0.2 + index * 0.1}s`);
+        markerBtn.setAttribute('aria-label', `View details for ${wonder.name}`);
+
         // FIX: UX-001 - Markers are now buttons for accessibility
         const markerIcon = L.divIcon({
           className: 'reset-button', // Reset button styles
-          // Using a CSS variable for delay to keep logic here but styles in CSS
-          // Note: CSP 'unsafe-inline' for style is required for this dynamic variable unless we use classes
-          html: `<button type="button" class="custom-marker" style="--marker-delay: ${
-            0.2 + index * 0.1
-          }s" aria-label="View details for ${wonder.name}"></button>`,
+          html: markerBtn,
           iconSize: [18, 18],
           iconAnchor: [9, 9],
         });
@@ -62,6 +72,11 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     };
 
+    /**
+     * Handles clicks on map markers.
+     * @param {Object} wonder - The wonder data object.
+     * @param {Object} markerInstance - The Leaflet marker instance.
+     */
     const handleMarkerClick = (wonder, markerInstance) => {
       // FIX: UX-002 - Block clicks during animation
       if (isAnimating) return;
@@ -89,6 +104,10 @@ document.addEventListener('DOMContentLoaded', () => {
       activeMarker = markerInstance;
     };
 
+    /**
+     * Updates the side panel content with the selected wonder's details.
+     * @param {Object} wonder - The wonder data object.
+     */
     const updatePanelContent = (wonder) => {
       // Clear existing content
       infoPanelContent.innerHTML = '';
@@ -103,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
       img.className = 'panel-image';
       img.loading = 'lazy';
 
-      // FIX: SEC-003 & PERF-001 - Handle error safely via JS property, not inline attribute
+      // FIX: SEC-003 & PERF-001 - Handle error safely via JS property
       img.onerror = () => {
         img.onerror = null; // Prevent infinite loop
         img.src =
@@ -139,19 +158,31 @@ document.addEventListener('DOMContentLoaded', () => {
       infoPanelContent.appendChild(textContent);
     };
 
+    /**
+     * Opens the information panel.
+     */
     const openPanel = () => {
       infoPanel.classList.add('active');
       body.classList.add('panel-active');
       // FIX: UX-003 - Disable map interaction when panel is open
       map.dragging.disable();
       map.scrollWheelZoom.disable();
+      // Ensure close button is accessible
+      panelCloseBtn.focus();
     };
 
+    /**
+     * Closes the information panel and resets the view.
+     */
     const closePanel = () => {
       infoPanel.classList.remove('active');
       body.classList.remove('panel-active');
       if (activeMarker) {
-        activeMarker.getElement().querySelector('.custom-marker').classList.remove('active');
+        // FIX: UX-005 - Restore focus to the marker button for accessibility
+        const markerBtn = activeMarker.getElement().querySelector('.custom-marker');
+        if (markerBtn) markerBtn.focus();
+
+        markerBtn.classList.remove('active');
         activeMarker = null;
       }
       markers.forEach((m) =>

@@ -1,3 +1,16 @@
+/**
+ * Data for the African Natural Wonders map.
+ * Contains location details, coordinates, descriptions, and image URLs.
+ *
+ * @type {Array<{
+ *   name: string,
+ *   location: string,
+ *   lat: number,
+ *   lng: number,
+ *   description: string,
+ *   image: string
+ * }>}
+ */
 export const naturalWonders = [
   {
     name: 'Serengeti National Park',
