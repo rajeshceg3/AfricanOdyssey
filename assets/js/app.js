@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const zoomInBtn = document.getElementById('zoom-in');
   const zoomOutBtn = document.getElementById('zoom-out');
   const body = document.body;
+  const mapContainer = document.getElementById('map');
   const startButton = document.getElementById('start-journey-btn');
 
   let markers = [];
@@ -30,8 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
       maxZoom: 12,
     });
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      // FIX: SEC-004 - Open attribution links in new tab
       attribution:
-        '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
+        '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions" target="_blank" rel="noopener noreferrer">CARTO</a>',
       subdomains: 'abcd',
       maxZoom: 20,
     }).addTo(map);
@@ -55,6 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
         markerBtn.className = 'custom-marker';
         markerBtn.style.setProperty('--marker-delay', `${0.2 + index * 0.1}s`);
         markerBtn.setAttribute('aria-label', `View details for ${wonder.name}`);
+        // FIX: A11Y-001 - Add aria-expanded and aria-controls
+        markerBtn.setAttribute('aria-expanded', 'false');
+        markerBtn.setAttribute('aria-controls', 'info-panel');
 
         // FIX: UX-001 - Markers are now buttons for accessibility
         const markerIcon = L.divIcon({
@@ -99,8 +104,10 @@ document.addEventListener('DOMContentLoaded', () => {
       markers.forEach((m) =>
         m.getElement().querySelector('.custom-marker').classList.add('dimmed')
       );
-      markerInstance.getElement().querySelector('.custom-marker').classList.remove('dimmed');
-      markerInstance.getElement().querySelector('.custom-marker').classList.add('active');
+      const markerBtn = markerInstance.getElement().querySelector('.custom-marker');
+      markerBtn.classList.remove('dimmed');
+      markerBtn.classList.add('active');
+      markerBtn.setAttribute('aria-expanded', 'true');
       activeMarker = markerInstance;
     };
 
@@ -118,6 +125,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const img = document.createElement('img');
       img.src = wonder.image;
+
+      // FIX: PERF-002 - Implement responsive images with srcset
+      const baseUrl = wonder.image.split('&w=')[0];
+      if (baseUrl) {
+        img.srcset = `${baseUrl}&w=400&q=80 400w, ${baseUrl}&w=800&q=80 800w, ${baseUrl}&w=1200&q=80 1200w`;
+        img.sizes = '(max-width: 768px) 100vw, 420px';
+      }
+
       img.alt = wonder.name;
       img.className = 'panel-image';
       img.loading = 'lazy';
@@ -180,9 +195,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (activeMarker) {
         // FIX: UX-005 - Restore focus to the marker button for accessibility
         const markerBtn = activeMarker.getElement().querySelector('.custom-marker');
-        if (markerBtn) markerBtn.focus();
-
-        markerBtn.classList.remove('active');
+        if (markerBtn) {
+          markerBtn.focus();
+          markerBtn.classList.remove('active');
+          markerBtn.setAttribute('aria-expanded', 'false');
+        }
         activeMarker = null;
       }
       markers.forEach((m) =>
@@ -205,6 +222,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (startButton) {
       startButton.addEventListener('click', () => {
         welcomeOverlay.classList.add('hidden');
+        // FIX: UX-006 - Move focus to map container so keyboard users can navigate immediately
+        mapContainer.focus();
         // Trigger markers only after interaction to save resources and align with user intent
         setTimeout(addMarkers, 500);
       });
