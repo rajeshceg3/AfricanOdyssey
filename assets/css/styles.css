@@ -433,9 +433,13 @@ body {
     transform: translateY(0);
   }
   #panel-close-btn {
+    /* FIX: UX-MOBILE-001 - Ensure button is within safe clickable area */
     top: -22px;
     left: calc(50% - 22px);
+    width: 44px;
+    height: 44px; /* Ensure 44px touch target */
     transform: rotate(90deg);
+    z-index: 1001; /* Ensure it's above everything else */
   }
   #panel-close-btn:hover {
     transform: scale(1.1) rotate(0deg);
