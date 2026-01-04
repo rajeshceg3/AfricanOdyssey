@@ -67,7 +67,9 @@ self.addEventListener('fetch', (event) => {
             if (
               !networkResponse ||
               networkResponse.status !== 200 ||
-              (networkResponse.type !== 'basic' && networkResponse.type !== 'cors' && networkResponse.type !== 'opaque')
+              (networkResponse.type !== 'basic' &&
+                networkResponse.type !== 'cors' &&
+                networkResponse.type !== 'opaque')
             ) {
               return networkResponse;
             }
@@ -76,8 +78,8 @@ self.addEventListener('fetch', (event) => {
             return networkResponse;
           })
           .catch(() => {
-             // Network failure, just return whatever we have (or nothing)
-             // If we have no cache and no network, this will fail naturally.
+            // Network failure, just return whatever we have (or nothing)
+            // If we have no cache and no network, this will fail naturally.
           });
 
         // Return cached response if available, otherwise wait for network
