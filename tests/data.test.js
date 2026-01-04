@@ -7,7 +7,7 @@ describe('Data Integrity Check', () => {
   });
 
   test('each wonder should have required properties', () => {
-    naturalWonders.forEach((wonder, index) => {
+    naturalWonders.forEach((wonder) => {
       expect(wonder).toHaveProperty('name');
       expect(typeof wonder.name).toBe('string');
 
