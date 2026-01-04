@@ -90,9 +90,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      // FIX: A11Y-002 - Respect reduced motion preference
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
       map.flyTo([wonder.lat, wonder.lng], 7, {
-        animate: true,
-        duration: 1.5,
+        animate: !prefersReducedMotion,
+        duration: prefersReducedMotion ? 0 : 1.5,
         easeLinearity: 0.1,
       });
       updatePanelContent(wonder);
@@ -127,10 +130,14 @@ document.addEventListener('DOMContentLoaded', () => {
       img.src = wonder.image;
 
       // FIX: PERF-002 - Implement responsive images with srcset
-      const baseUrl = wonder.image.split('&w=')[0];
-      if (baseUrl) {
+      try {
+        const url = new URL(wonder.image);
+        url.searchParams.delete('w');
+        const baseUrl = url.toString();
         img.srcset = `${baseUrl}&w=400&q=80 400w, ${baseUrl}&w=800&q=80 800w, ${baseUrl}&w=1200&q=80 1200w`;
         img.sizes = '(max-width: 768px) 100vw, 420px';
+      } catch (e) {
+        console.warn('Invalid image URL:', wonder.image);
       }
 
       img.alt = wonder.name;
@@ -205,7 +212,15 @@ document.addEventListener('DOMContentLoaded', () => {
       markers.forEach((m) =>
         m.getElement().querySelector('.custom-marker').classList.remove('dimmed')
       );
-      map.flyTo([2.8, 18.35], 4, { animate: true, duration: 1.5, easeLinearity: 0.1 });
+
+      // FIX: A11Y-002 - Respect reduced motion preference
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      map.flyTo([2.8, 18.35], 4, {
+        animate: !prefersReducedMotion,
+        duration: prefersReducedMotion ? 0 : 1.5,
+        easeLinearity: 0.1,
+      });
       // FIX: UX-003 - Re-enable map interaction
       map.dragging.enable();
       map.scrollWheelZoom.enable();
@@ -235,9 +250,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 3000);
     }
   } catch (error) {
-    console.error('CRITICAL ERROR: Map initialization failed.', error);
-    document.body.innerHTML =
-      '<div style="color:white;text-align:center;padding-top:20%;">A critical error occurred. Unable to load the experience. Please check your connection and try again.</div>';
+    console.error('Non-critical initialization error:', error);
+    // FIX: UX-007 - Use a toast notification instead of nuking the body
+    const errorToast = document.createElement('div');
+    errorToast.style.cssText =
+      'position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #e74c3c; color: white; padding: 10px 20px; border-radius: 4px; z-index: 10000; box-shadow: 0 2px 10px rgba(0,0,0,0.2); font-family: sans-serif;';
+    errorToast.textContent = 'Map initialization experienced an issue. Some features may be limited.';
+    document.body.appendChild(errorToast);
+    setTimeout(() => errorToast.remove(), 5000);
   }
 
   // FIX: PERF-003 - Register Service Worker
