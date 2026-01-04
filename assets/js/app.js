@@ -239,4 +239,20 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.innerHTML =
       '<div style="color:white;text-align:center;padding-top:20%;">A critical error occurred. Unable to load the experience. Please check your connection and try again.</div>';
   }
+
+  // FIX: PERF-003 - Register Service Worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker
+        .register('./service-worker.js')
+        .then((registration) => {
+          // ServiceWorker registration successful
+          // eslint-disable-next-line no-console
+          console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        })
+        .catch((err) => {
+          console.error('ServiceWorker registration failed: ', err);
+        });
+    });
+  }
 });
