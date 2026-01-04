@@ -60,6 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // FIX: A11Y-001 - Add aria-expanded and aria-controls
         markerBtn.setAttribute('aria-expanded', 'false');
         markerBtn.setAttribute('aria-controls', 'info-panel');
+        // Add native tooltip via title for basic hover support (enhanced by CSS)
+        markerBtn.title = `Discover ${wonder.name}`;
 
         // FIX: UX-001 - Markers are now buttons for accessibility
         const markerIcon = L.divIcon({
@@ -71,7 +73,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const marker = L.marker([wonder.lat, wonder.lng], {
           icon: markerIcon,
           keyboard: true,
+          // Leaflet tooltip for better placement
+          title: wonder.name,
         }).addTo(map);
+
+        // Bind a Leaflet tooltip for a more polished hover experience
+        marker.bindTooltip(wonder.name, {
+          direction: 'top',
+          offset: [0, -10],
+          className: 'custom-leaflet-tooltip',
+          opacity: 1,
+        });
         marker.getElement().addEventListener('click', () => handleMarkerClick(wonder, marker));
         markers.push(marker);
       });
