@@ -1,9 +1,0 @@
-127.0.0.1 - - [04/Jan/2026 03:32:58] code 404, message File not found
-127.0.0.1 - - [04/Jan/2026 03:32:58] "GET /robots.txt HTTP/1.1" 404 -
-127.0.0.1 - - [04/Jan/2026 03:32:59] "GET / HTTP/1.0" 200 -
-127.0.0.1 - - [04/Jan/2026 03:41:51] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [04/Jan/2026 03:41:51] "GET /assets/css/styles.css HTTP/1.1" 200 -
-127.0.0.1 - - [04/Jan/2026 03:41:52] "GET /assets/js/app.js HTTP/1.1" 200 -
-127.0.0.1 - - [04/Jan/2026 03:41:52] "GET /assets/js/data.js HTTP/1.1" 200 -
-127.0.0.1 - - [04/Jan/2026 03:41:52] "GET /service-worker.js HTTP/1.1" 200 -
-127.0.0.1 - - [04/Jan/2026 03:41:52] "GET /index.html HTTP/1.1" 200 -

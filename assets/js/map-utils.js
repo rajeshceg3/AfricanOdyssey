@@ -53,8 +53,8 @@ export const addMarkers = (map, data, onMarkerClick) => {
     const markerIcon = L.divIcon({
       className: 'reset-button',
       html: markerBtn,
-      iconSize: [18, 18],
-      iconAnchor: [9, 9],
+      iconSize: [24, 24], // Increased touch target size
+      iconAnchor: [12, 12],
     });
 
     const marker = L.marker([wonder.lat, wonder.lng], {
