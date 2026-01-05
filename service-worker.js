@@ -5,6 +5,8 @@ const ASSETS_TO_CACHE = [
   './assets/css/styles.css',
   './assets/js/app.js',
   './assets/js/data.js',
+  './assets/js/map-utils.js',
+  './assets/js/ui-utils.js',
 ];
 
 // Install event: Pre-cache critical assets

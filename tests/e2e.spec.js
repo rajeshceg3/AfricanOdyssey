@@ -24,7 +24,7 @@ test.describe('African Odyssey', () => {
 
     // Wait for markers to appear (simulated by timeout in app.js)
     // Note: The app has a 500ms timeout after click.
-    await page.waitForTimeout(1000);
+    await page.locator('.custom-marker').first().waitFor({ state: 'visible', timeout: 5000 });
 
     // Find a marker. We need to be careful as they are created dynamically.
     // The markers have class 'custom-marker'.

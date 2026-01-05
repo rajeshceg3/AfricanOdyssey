@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Interactive map of African natural wonders",
   "scripts": {
-    "test": "jest tests/data.test.js",
+    "test": "jest tests/ --testPathIgnorePatterns=e2e",
     "lint": "eslint .",
     "format": "prettier --write ."
   },

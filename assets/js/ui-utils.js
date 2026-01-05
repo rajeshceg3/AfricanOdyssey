@@ -32,7 +32,8 @@ export const updatePanelContent = (contentContainer, wonder) => {
     const url = new URL(wonder.image);
     url.searchParams.delete('w');
     const baseUrl = url.toString();
-    img.srcset = `${baseUrl}&w=400&q=80 400w, ${baseUrl}&w=800&q=80 800w, ${baseUrl}&w=1200&q=80 1200w`;
+    const separator = baseUrl.includes('?') ? '&' : '?';
+    img.srcset = `${baseUrl}${separator}w=400&q=80 400w, ${baseUrl}${separator}w=800&q=80 800w, ${baseUrl}${separator}w=1200&q=80 1200w`;
     img.sizes = '(max-width: 768px) 100vw, 420px';
   } catch (e) {
     console.warn('Invalid image URL:', wonder.image);
