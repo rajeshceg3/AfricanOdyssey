@@ -73,7 +73,8 @@ export const updatePanelContent = (contentContainer, wonder) => {
   h2.textContent = wonder.name;
 
   const h3 = document.createElement('h3');
-  h3.textContent = wonder.location;
+  // Add icon to location
+  h3.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> ${wonder.location}`;
 
   const p = document.createElement('p');
   p.textContent = wonder.description;

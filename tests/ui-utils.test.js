@@ -50,7 +50,8 @@ describe('UI Utils', () => {
     updatePanelContent(container, wonder);
 
     expect(container.querySelector('h2').textContent).toBe(wonder.name);
-    expect(container.querySelector('h3').textContent).toBe(wonder.location);
+    // Modified to expect the space added by the icon
+    expect(container.querySelector('h3').textContent).toBe(' ' + wonder.location);
     expect(container.querySelector('p').textContent).toBe(wonder.description);
     expect(container.querySelector('img').src).toContain(wonder.image);
   });
