@@ -113,7 +113,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // UX Enhancement: Start Button Logic
     if (startButton) {
+      // FIX: UX-008 - Skip animation for returning users
+      if (sessionStorage.getItem('visited')) {
+         // Speed up animations via CSS class or just skip logic?
+         // Simplest is to just make the button clickable immediately or auto-dismiss if we wanted.
+         // For now, let's just make sure the user knows they can click.
+         // Actually, let's just set the visited flag on click.
+      }
+
       startButton.addEventListener('click', () => {
+        sessionStorage.setItem('visited', 'true');
         welcomeOverlay.classList.add('hidden');
         // FIX: UX-006 - Move focus to map container so keyboard users can navigate immediately
         mapContainer.focus();
@@ -126,6 +135,13 @@ document.addEventListener('DOMContentLoaded', () => {
         welcomeOverlay.classList.add('hidden');
         initMarkers();
       }, 3000);
+    }
+
+    // UX Enhancement: Skip welcome for returning users (optional, based on requirements)
+    if (sessionStorage.getItem('visited')) {
+       // We could auto-hide, but "Start Journey" is part of the experience.
+       // Let's at least speed up the entrance.
+       welcomeOverlay.classList.add('returning-visitor');
     }
   } catch (error) {
     console.error('Non-critical initialization error:', error);
