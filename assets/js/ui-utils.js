@@ -11,7 +11,7 @@
 export const updatePanelContent = (contentContainer, wonder) => {
   if (!contentContainer || !wonder) return;
 
-  // Clear existing content
+  // Clear existing content to ensure animations re-run
   contentContainer.innerHTML = '';
 
   // Create Image Container
@@ -70,13 +70,16 @@ export const updatePanelContent = (contentContainer, wonder) => {
   textContent.className = 'panel-text-content';
 
   const h2 = document.createElement('h2');
+  h2.className = 'info-title';
   h2.textContent = wonder.name;
 
   const h3 = document.createElement('h3');
+  h3.className = 'info-subtitle';
   // Add icon to location
   h3.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> ${wonder.location}`;
 
   const p = document.createElement('p');
+  p.className = 'info-body';
   p.textContent = wonder.description;
 
   textContent.appendChild(h2);
@@ -115,6 +118,8 @@ const setupFocusTrap = (element) => {
   const focusableElements = element.querySelectorAll(
     'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
   );
+  if (focusableElements.length === 0) return;
+
   const firstElement = focusableElements[0];
   const lastElement = focusableElements[focusableElements.length - 1];
 

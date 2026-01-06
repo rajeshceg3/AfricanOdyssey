@@ -113,12 +113,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // UX Enhancement: Start Button Logic
     if (startButton) {
+      // Magnetic Effect Script
+      startButton.addEventListener('mousemove', (e) => {
+        const rect = startButton.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        // Limit the movement to avoid it running away
+        startButton.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+      });
+
+      startButton.addEventListener('mouseleave', () => {
+        startButton.style.transform = 'translate(0, 0)';
+      });
+
       startButton.addEventListener('click', () => {
         welcomeOverlay.classList.add('hidden');
-        // FIX: UX-006 - Move focus to map container so keyboard users can navigate immediately
-        mapContainer.focus();
+
+        // Ensure overlay is removed from accessibility tree after transition
+        setTimeout(() => {
+            welcomeOverlay.style.display = 'none';
+            // FIX: UX-006 - Move focus to map container so keyboard users can navigate immediately
+            mapContainer.focus();
+        }, 1200); // Matches CSS transition duration
+
         // Trigger markers only after interaction to save resources and align with user intent
-        setTimeout(initMarkers, 500);
+        setTimeout(initMarkers, 800);
       });
     } else {
       // Fallback if button missing
