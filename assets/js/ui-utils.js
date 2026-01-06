@@ -177,6 +177,7 @@ export const showToast = (message, type = 'error') => {
   // Accessibility
   toast.setAttribute('role', 'alert');
   toast.setAttribute('aria-live', 'assertive');
+  toast.style.zIndex = '11000'; // Ensure it is above everything
 
   document.body.appendChild(toast);
 
