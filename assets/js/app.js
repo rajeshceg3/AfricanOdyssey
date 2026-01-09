@@ -76,11 +76,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // 2. Reset Focus to Marker if active
       // FIX: UX-005 - Restore focus to the marker button for accessibility
+      let focusRestored = false;
       if (activeMarker) {
-        const markerBtn = activeMarker.getElement().querySelector('.custom-marker');
-        if (markerBtn) {
+        const markerEl = activeMarker.getElement();
+        const markerBtn = markerEl ? markerEl.querySelector('.custom-marker') : null;
+
+        // Check if marker is actually on screen (Leaflet removes off-screen markers)
+        if (markerBtn && document.body.contains(markerBtn)) {
           markerBtn.focus();
+          focusRestored = true;
         }
+      }
+
+      // Fallback focus if marker is not available
+      if (!focusRestored && mapContainer) {
+        mapContainer.focus();
       }
 
       // 3. Reset Markers Visual State
@@ -118,6 +128,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const rect = startButton.getBoundingClientRect();
         const x = e.clientX - rect.left - rect.width / 2;
         const y = e.clientY - rect.top - rect.height / 2;
+
+        // Deadzone check: only magnetize if we are well inside to avoid edge jitter
+        // If mouse is too close to edge, treat as 0
+        const isNearEdge = Math.abs(x) > rect.width / 2 - 5 || Math.abs(y) > rect.height / 2 - 5;
+
+        if (isNearEdge) {
+           startButton.style.transform = 'translate(0, 0)';
+           return;
+        }
+
         // Limit the movement to avoid it running away
         startButton.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
       });
