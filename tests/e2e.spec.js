@@ -35,7 +35,10 @@ test.describe('African Odyssey', () => {
     // Note: Playwright locators are strict, so we reuse the locator.
 
     // Click marker
-    await marker.click();
+    // We use force: true because Leaflet's marker structure (button inside div) can cause Playwright
+    // to detect "interception" in both directions depending on which element is targeted.
+    // Real users can click this fine, so forcing the event is acceptable here.
+    await marker.click({ force: true });
 
     // Verify panel opens
     const panel = page.locator('#info-panel');
