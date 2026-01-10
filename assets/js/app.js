@@ -125,6 +125,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (startButton) {
       // Magnetic Effect Script
       startButton.addEventListener('mousemove', (e) => {
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReducedMotion) return;
+
         const rect = startButton.getBoundingClientRect();
         const x = e.clientX - rect.left - rect.width / 2;
         const y = e.clientY - rect.top - rect.height / 2;

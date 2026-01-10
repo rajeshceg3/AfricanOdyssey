@@ -10,12 +10,17 @@
 export const initMap = (elementId) => {
   const map = L.map(elementId, {
     zoomControl: false,
-    attributionControl: true,
+    attributionControl: false,
     center: [2.8, 18.35],
     zoom: 4,
     minZoom: 3,
     maxZoom: 12,
   });
+
+  // FIX: SEC-004 - Ensure attribution prefix is secure
+  L.control.attribution({
+    prefix: '<a href="https://leafletjs.com" title="A JavaScript library for interactive maps" target="_blank" rel="noopener noreferrer">Leaflet</a>'
+  }).addTo(map);
 
   L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
     // FIX: SEC-004 - Open attribution links in new tab with proper rel attributes

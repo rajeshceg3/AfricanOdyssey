@@ -63,4 +63,41 @@ test.describe('African Odyssey', () => {
     // await expect(page.locator(':focus')).toHaveClass(/custom-marker/);
     // Note: This might be flaky if focus logic is complex or async.
   });
+
+  test('should satisfy security and accessibility requirements', async ({ page }) => {
+    // CSP Check
+    const cspMeta = page.locator('meta[http-equiv="Content-Security-Policy"]');
+    await expect(cspMeta).toHaveCount(1);
+    const cspContent = await cspMeta.getAttribute('content');
+    expect(cspContent).not.toContain("'unsafe-inline'");
+    expect(cspContent).toContain("default-src 'self'");
+
+    // Viewport Check (A11y)
+    const viewportMeta = page.locator('meta[name="viewport"]');
+    await expect(viewportMeta).toHaveCount(1);
+    const viewportContent = await viewportMeta.getAttribute('content');
+    expect(viewportContent).not.toContain('user-scalable=no');
+
+    // Secure Links Check
+    // Navigate to map to see attribution
+    await page.locator('#start-journey-btn').click();
+
+    // We need to wait for the map to load attribution links
+    await page.waitForSelector('.leaflet-control-attribution a');
+    const attributionLinks = page.locator('.leaflet-control-attribution a');
+    const count = await attributionLinks.count();
+
+    // Check at least one external link exists to validate the test
+    expect(count).toBeGreaterThan(0);
+
+    for (let i = 0; i < count; i++) {
+        const link = attributionLinks.nth(i);
+        const target = await link.getAttribute('target');
+        if (target === '_blank') {
+            const rel = await link.getAttribute('rel');
+            expect(rel).toContain('noopener');
+            expect(rel).toContain('noreferrer');
+        }
+    }
+  });
 });
