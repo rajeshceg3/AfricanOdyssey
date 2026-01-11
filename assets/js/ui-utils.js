@@ -68,7 +68,17 @@ export const updatePanelContent = (contentContainer, wonder) => {
   // Decorative SVG
   const decorativeDiv = document.createElement('div');
   decorativeDiv.className = 'decorative-svg-corner';
-  decorativeDiv.innerHTML = `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><path d="M0 80 V 0 H 80" fill="none" stroke-opacity="0.3" stroke="var(--accent-color)" stroke-width="3"/></svg>`;
+  // FIX: SEC-001 - Use DOM methods instead of innerHTML
+  const decSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  decSvg.setAttribute('viewBox', '0 0 80 80');
+  const decPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  decPath.setAttribute('d', 'M0 80 V 0 H 80');
+  decPath.setAttribute('fill', 'none');
+  decPath.setAttribute('stroke-opacity', '0.3');
+  decPath.setAttribute('stroke', 'var(--accent-color)');
+  decPath.setAttribute('stroke-width', '3');
+  decSvg.appendChild(decPath);
+  decorativeDiv.appendChild(decSvg);
   contentContainer.appendChild(decorativeDiv);
 
   // Text Content
@@ -82,7 +92,30 @@ export const updatePanelContent = (contentContainer, wonder) => {
   const h3 = document.createElement('h3');
   h3.className = 'info-subtitle';
   // Add icon to location
-  h3.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> ${wonder.location}`;
+  // FIX: SEC-001 - Create icon programmatically
+  const locSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  locSvg.setAttribute('width', '14');
+  locSvg.setAttribute('height', '14');
+  locSvg.setAttribute('viewBox', '0 0 24 24');
+  locSvg.setAttribute('fill', 'none');
+  locSvg.setAttribute('stroke', 'currentColor');
+  locSvg.setAttribute('stroke-width', '2');
+  locSvg.setAttribute('stroke-linecap', 'round');
+  locSvg.setAttribute('stroke-linejoin', 'round');
+
+  const locPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  locPath.setAttribute('d', 'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z');
+
+  const locCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  locCircle.setAttribute('cx', '12');
+  locCircle.setAttribute('cy', '10');
+  locCircle.setAttribute('r', '3');
+
+  locSvg.appendChild(locPath);
+  locSvg.appendChild(locCircle);
+
+  h3.appendChild(locSvg);
+  h3.appendChild(document.createTextNode(` ${wonder.location}`));
 
   const p = document.createElement('p');
   p.className = 'info-body';

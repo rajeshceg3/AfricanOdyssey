@@ -1,4 +1,4 @@
-import { naturalWonders } from './data.js';
+import { fetchWonders } from './data.js';
 import * as MapUtils from './map-utils.js';
 import * as UIUtils from './ui-utils.js';
 
@@ -6,7 +6,7 @@ import * as UIUtils from './ui-utils.js';
  * Main application logic for the African Odyssey map.
  * Orchestrates interactions between the Map and the UI.
  */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const welcomeOverlay = document.getElementById('welcome-overlay');
   const infoPanel = document.getElementById('info-panel');
   const infoPanelContent = document.getElementById('info-panel-content');
@@ -21,6 +21,15 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeMarker = null;
   // FIX: UX-002 - State flag to prevent animation collisions
   let isAnimating = false;
+
+  // FIX: ARCH-001 - Fetch data asynchronously
+  let naturalWonders = [];
+  try {
+    naturalWonders = await fetchWonders();
+  } catch (error) {
+    console.error('Failed to load data:', error);
+    UIUtils.showToast('Failed to load map data.', 'error');
+  }
 
   // FIX: CODE-001 - Wrap initialization in try...catch for resilience
   try {
@@ -184,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
       navigator.serviceWorker
         .register('./service-worker.js')
         .then(() => {
-          // console.log('ServiceWorker registration successful');
+          // Registration successful
         })
         .catch((err) => {
           console.error('ServiceWorker registration failed: ', err);

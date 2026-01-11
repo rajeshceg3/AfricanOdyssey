@@ -82,6 +82,11 @@ test.describe('African Odyssey', () => {
     // Navigate to map to see attribution
     await page.locator('#start-journey-btn').click();
 
+    // Wait for the welcome overlay to be fully hidden/removed
+    // This ensures no overlay is intercepting checks or visibility
+    const welcomeOverlay = page.locator('#welcome-overlay');
+    await expect(welcomeOverlay).not.toBeVisible({ timeout: 5000 });
+
     // We need to wait for the map to load attribution links
     await page.waitForSelector('.leaflet-control-attribution a');
     const attributionLinks = page.locator('.leaflet-control-attribution a');

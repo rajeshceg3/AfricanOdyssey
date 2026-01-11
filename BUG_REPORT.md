@@ -1,75 +1,57 @@
-# Comprehensive Bug Assessment Report - African Odyssey
+# Tactical Intelligence Briefing: Vulnerability & Bug Assessment
 
-**Date:** 2026-01-09
-**Assessor:** Jules (Task Force Veteran QA)
-**Target:** African Odyssey Web Application
+**Target Application:** African Odyssey
+**Date:** 2026-01-11
+**Assessor:** Elite QA Task Force
 
 ## Executive Summary
-A rigorous assessment of the "African Odyssey" application has revealed **1 Critical**, **2 High**, **3 Medium**, and **2 Low** severity issues. The most urgent is a failure in the End-to-End (E2E) testing pipeline, which blocks deployment validation. Additionally, there are accessibility gaps regarding focus management and potential resilience issues in the image loading logic.
+The application demonstrates a high level of visual polish and modern CSS usage. However, critical architectural and security vulnerabilities exist that compromise long-term maintainability and security posture. Immediate remediation is required for CSP compliance and data management.
 
----
+## 1. Security Vulnerabilities
 
-## 1. Critical Severity (Mission Critical)
+### SEC-001: DOM Injection Risk (Medium Severity)
+-   **Location:** `assets/js/ui-utils.js`
+-   **Issue:** Usage of `innerHTML` to inject SVG icons and decorative elements. While currently using hardcoded strings, this pattern encourages unsafe practices and could be exploited if dynamic data were introduced.
+-   **Mitigation:** Replace `innerHTML` with `document.createElementNS` for SVGs or `textContent` for text.
 
-### BUG-001: E2E Test Automation Failure
-- **Location:** `tests/e2e.spec.js`
-- **Description:** The automated test `should open and close details panel` fails consistently. Playwright reports that the marker click action is intercepted by the Leaflet marker container (`div.leaflet-marker-icon`).
-- **Impact:** Prevents continuous integration and deployment validation. We cannot certify the build stability.
-- **Reproduction:** Run `npx playwright test`.
-- **Recommendation:** Refactor the test to interact with the Leaflet marker container or bypass the strict pointer check if the interception is a false positive inherent to Leaflet's DOM structure.
+### SEC-002: Hardcoded Data Exposure (Low Severity)
+-   **Location:** `assets/js/data.js`
+-   **Issue:** Application data is hardcoded in a JavaScript file. This makes updates difficult and increases bundle size unnecessarily.
+-   **Mitigation:** Externalize data to `assets/data/wonders.json` and fetch dynamically.
 
----
+## 2. Architectural Issues
 
-## 2. High Severity (Operational Risk)
+### ARCH-001: Monolithic Data Structure (High Severity)
+-   **Location:** `assets/js/data.js`
+-   **Issue:** The `naturalWonders` array is loaded synchronously with the application. As the dataset grows, this will degrade initial load performance.
+-   **Recommendation:** Implement asynchronous data fetching.
 
-### BUG-002: Accessibility - Lost Focus on Panel Close
-- **Location:** `assets/js/app.js`
-- **Description:** When the details panel is closed, the application attempts to return focus to the marker. However, if the map has panned significantly or the marker is clustered/hidden, focus might be lost or returned to a non-visible element, confusing screen reader users.
-- **Recommendation:** Ensure focus is robustly managed. If the marker is not valid/visible, fallback to the map container or the "Start Journey" button area.
+### ARCH-002: E2E Test Instability (Medium Severity)
+-   **Location:** `tests/e2e.spec.js`
+-   **Issue:** The test "should satisfy security and accessibility requirements" fails due to a timeout. The test attempts to find attribution links while the "Welcome Overlay" is still fading out, causing a race condition or visibility check failure.
+-   **Recommendation:** Implement robust waiting logic for overlay removal before asserting map element visibility.
 
-### BUG-003: Content Security Policy (CSP) Laxity
-- **Location:** `index.html`
-- **Description:** The CSP is present but could be stricter. The `img-src` directive allows `data:` which, while sometimes necessary, can be a vector for XSS if not carefully managed.
-- **Recommendation:** Review usage of `data:` URIs. If only used for placeholders/SVGs, consider hashing them or restricting further if possible. (Current usage seems to be SVG placeholders in `ui-utils.js`).
+## 3. Accessibility (A11y) & UX Findings
 
----
+### A11Y-001: Contrast Ratios
+-   **Location:** `assets/css/styles.css`
+-   **Issue:** The color `--accent-quaternary` (#D4C5B0) on `--background-color` (#F9F7F2) may have insufficient contrast for small text.
+-   **Recommendation:** Verify contrast ratios meet WCAG AA standards.
 
-## 3. Medium Severity (Tactical Weakness)
+### UX-001: Mobile Zoom Control Overlap
+-   **Location:** `assets/css/styles.css`
+-   **Issue:** On mobile, zoom controls are hidden when the panel is active. While intentional, it removes user control.
+-   **Recommendation:** Ensure users can still interact with the map or close the panel easily. (Current implementation hides controls, which is acceptable but worth noting).
 
-### BUG-004: Image Loading Resilience
-- **Location:** `assets/js/ui-utils.js`
-- **Description:** The image handling logic assumes `wonder.image` is always a valid URL string that can be parsed by `new URL()`. If data is malformed, `try...catch` handles it, but the fallback logic (`img.onerror`) relies on the browser firing an error event.
-- **Recommendation:** Enhance validation of image URLs before assignment.
+## 4. Code Quality
 
-### BUG-005: Service Worker Cache Scope
-- **Location:** `service-worker.js`
-- **Description:** The service worker caches specific files. If new assets (images, fonts) are added, they might not be cached unless explicitly added or if the strategy covers them. The current strategy covers `fetch` for other assets, which is good (`Stale-While-Revalidate`), but explicit precaching is safer for core app logic.
-- **Recommendation:** Verify `ASSETS_TO_CACHE` includes all critical JS modules.
-
-### BUG-006: Magnetic Button Jitter (UX)
-- **Location:** `assets/js/app.js`
-- **Description:** The magnetic button effect on the "Start Journey" button can be jittery if the mouse moves near the edge, potentially causing the button to "flicker" between positions.
-- **Recommendation:** Add a dampening factor or a dead zone.
-
----
-
-## 4. Low Severity (Minor Nuance)
-
-### BUG-007: Leaflet Attribution Links
-- **Location:** `assets/js/map-utils.js`
-- **Description:** Attribution links open in new tabs (`target="_blank"`) but should ensure `rel="noopener noreferrer"` is consistently applied (already implemented in `map-utils.js` but verifying consistency is key).
-- **Status:** Seems correct in code, verify in rendered DOM.
-
-### BUG-008: Toast Notification Stacking
-- **Location:** `assets/js/ui-utils.js`
-- **Description:** If multiple errors occur rapidly, the toast notifications might overlap or replace each other too quickly to be read.
-- **Recommendation:** Implement a queue or stack for toasts.
-
----
+### CODE-001: Commented Out Code
+-   **Location:** `assets/js/app.js`, `service-worker.js`
+-   **Issue:** `console.log` statements are commented out.
+-   **Recommendation:** Remove dead code or use a logger utility that can be toggled.
 
 ## Action Plan
-
-1.  **Remediate BUG-001:** Modify `tests/e2e.spec.js` to target the marker container.
-2.  **Hardening:** Update `app.js` to improve focus management (BUG-002).
-3.  **Optimization:** Refine `ui-utils.js` for image handling (BUG-004).
-4.  **Verification:** Run full test suite.
+1.  **Fix E2E Tests:** meaningful waits in `tests/e2e.spec.js`.
+2.  **Refactor Data:** Move `naturalWonders` to JSON and implement `fetch`.
+3.  **Harden DOM:** Replace `innerHTML` with DOM creation methods.
+4.  **Verify:** Run full regression suite.

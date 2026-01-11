@@ -19,7 +19,8 @@ export const initMap = (elementId) => {
 
   // FIX: SEC-004 - Ensure attribution prefix is secure
   L.control.attribution({
-    prefix: '<a href="https://leafletjs.com" title="A JavaScript library for interactive maps" target="_blank" rel="noopener noreferrer">Leaflet</a>'
+    prefix: '<a href="https://leafletjs.com" title="A JavaScript library for interactive maps" target="_blank" rel="noopener noreferrer">Leaflet</a>',
+    position: 'bottomleft' // Match CSS styling
   }).addTo(map);
 
   L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {

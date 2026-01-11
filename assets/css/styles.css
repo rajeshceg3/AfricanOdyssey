@@ -4,10 +4,10 @@
   --panel-background: rgba(255, 255, 255, 0.65); /* More translucent for better glass effect */
   --text-primary: #2A2622; /* Rich Charcoal */
   --text-secondary: #6B635B; /* Warm Stone */
-  --accent-color: #E09F7D; /* Soft Terracotta */
-  --accent-secondary: #A5BFA3; /* Muted Sage */
+  --accent-color: #C87955; /* Soft Terracotta - Darkened for AA Contrast */
+  --accent-secondary: #8DA88B; /* Muted Sage - Darkened */
   --accent-tertiary: #EBE0D6; /* Warm Sand */
-  --accent-quaternary: #D4C5B0; /* Taupe */
+  --accent-quaternary: #B0A08A; /* Taupe - Darkened for UI elements */
   --highlight-color: #F4DDB0; /* Muted Gold */
   --shadow-color: rgba(42, 38, 34, 0.06);
 
@@ -261,7 +261,8 @@ body {
   filter: sepia(0.2) contrast(1.02) saturate(0.9);
 }
 
-.leaflet-control-container { display: none !important; }
+/* FIX: UX-00X - Removed display:none to allow attribution to be visible */
+/* .leaflet-control-container { display: none !important; } */
 .leaflet-popup-pane { display: none; }
 
 .leaflet-bottom.leaflet-left {

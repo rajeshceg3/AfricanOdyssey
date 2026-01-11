@@ -7,13 +7,13 @@ const ASSETS_TO_CACHE = [
   './assets/js/data.js',
   './assets/js/map-utils.js',
   './assets/js/ui-utils.js',
+  './assets/data/wonders.json',
 ];
 
 // Install event: Pre-cache critical assets
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      // console.log('[Service Worker] Pre-caching critical assets');
       return cache.addAll(ASSETS_TO_CACHE);
     })
   );
@@ -27,7 +27,6 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         keyList.map((key) => {
           if (key !== CACHE_NAME) {
-            // console.log('[Service Worker] Removing old cache:', key);
             return caches.delete(key);
           }
         })
