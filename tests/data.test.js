@@ -1,6 +1,29 @@
-import { naturalWonders } from '../assets/js/data.js';
+import { fetchWonders } from '../assets/js/data.js';
+
+// Mock global fetch
+global.fetch = jest.fn(() =>
+  Promise.resolve({
+    ok: true,
+    json: () => Promise.resolve([
+      {
+        name: 'Serengeti National Park',
+        location: 'Tanzania',
+        lat: -2.3333,
+        lng: 34.8333,
+        description: 'Test Description',
+        image: 'https://example.com/image.jpg'
+      }
+    ]),
+  })
+);
 
 describe('Data Integrity Check', () => {
+  let naturalWonders;
+
+  beforeAll(async () => {
+    naturalWonders = await fetchWonders();
+  });
+
   test('should have an array of natural wonders', () => {
     expect(Array.isArray(naturalWonders)).toBe(true);
     expect(naturalWonders.length).toBeGreaterThan(0);
