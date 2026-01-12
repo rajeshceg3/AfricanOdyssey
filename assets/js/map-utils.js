@@ -47,8 +47,9 @@ export const addMarkers = (map, data, onMarkerClick) => {
     // FIX: SEC-002 - Create element programmatically
     const markerBtn = document.createElement('button');
     markerBtn.type = 'button';
-    markerBtn.className = 'custom-marker';
-    markerBtn.style.setProperty('--marker-delay', `${0.2 + index * 0.1}s`);
+    // FIX: CSP-001 - Use class-based delays instead of inline styles
+    const delayClass = index < 30 ? `delay-${index}` : 'delay-fallback';
+    markerBtn.className = `custom-marker ${delayClass}`;
     markerBtn.setAttribute('aria-label', `View details for ${wonder.name}`);
     // FIX: A11Y-001 - Add aria-expanded and aria-controls
     markerBtn.setAttribute('aria-expanded', 'false');

@@ -30,14 +30,17 @@ export const updatePanelContent = (contentContainer, wonder) => {
   // FIX: PERF-002 - Implement responsive images with srcset
   try {
     if (wonder.image && typeof wonder.image === 'string') {
-      const url = new URL(wonder.image);
-      // Only process Unsplash URLs for dynamic resizing
-      if (url.hostname.includes('unsplash.com')) {
-        url.searchParams.delete('w');
-        const baseUrl = url.toString();
-        const separator = baseUrl.includes('?') ? '&' : '?';
-        img.srcset = `${baseUrl}${separator}w=400&q=80 400w, ${baseUrl}${separator}w=800&q=80 800w, ${baseUrl}${separator}w=1200&q=80 1200w`;
-        img.sizes = '(max-width: 768px) 100vw, 420px';
+      // Ensure the URL is absolute or valid before parsing
+      if (wonder.image.startsWith('http')) {
+        const url = new URL(wonder.image);
+        // Only process Unsplash URLs for dynamic resizing
+        if (url.hostname.includes('unsplash.com')) {
+          url.searchParams.delete('w');
+          const baseUrl = url.toString();
+          const separator = baseUrl.includes('?') ? '&' : '?';
+          img.srcset = `${baseUrl}${separator}w=400&q=80 400w, ${baseUrl}${separator}w=800&q=80 800w, ${baseUrl}${separator}w=1200&q=80 1200w`;
+          img.sizes = '(max-width: 768px) 100vw, 420px';
+        }
       }
     }
   } catch (e) {
