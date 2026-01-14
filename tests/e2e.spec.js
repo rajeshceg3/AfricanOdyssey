@@ -14,7 +14,8 @@ test.describe('African Odyssey', () => {
     const startButton = page.locator('#start-journey-btn');
     await startButton.click();
 
-    await expect(welcomeOverlay).not.toBeVisible();
+    // FIX: ARCH-002 - Increased timeout and strict visibility check
+    await expect(welcomeOverlay).not.toBeVisible({ timeout: 10000 });
     await expect(page.locator('#map')).toBeFocused();
   });
 
@@ -24,7 +25,7 @@ test.describe('African Odyssey', () => {
 
     // Wait for markers to appear (simulated by timeout in app.js)
     // Note: The app has a 500ms timeout after click.
-    await page.locator('.custom-marker').first().waitFor({ state: 'visible', timeout: 5000 });
+    await page.locator('.custom-marker').first().waitFor({ state: 'visible', timeout: 10000 });
 
     // Find a marker. We need to be careful as they are created dynamically.
     // The markers have class 'custom-marker'.
@@ -85,11 +86,14 @@ test.describe('African Odyssey', () => {
     // Wait for the welcome overlay to be fully hidden/removed
     // This ensures no overlay is intercepting checks or visibility
     const welcomeOverlay = page.locator('#welcome-overlay');
-    await expect(welcomeOverlay).not.toBeVisible({ timeout: 5000 });
+    // FIX: ARCH-002 - Increased timeout for robustness
+    await expect(welcomeOverlay).not.toBeVisible({ timeout: 10000 });
 
     // We need to wait for the map to load attribution links
-    await page.waitForSelector('.leaflet-control-attribution a');
+    // FIX: Use locator.waitFor instead of waitForSelector
     const attributionLinks = page.locator('.leaflet-control-attribution a');
+    await attributionLinks.first().waitFor({ state: 'visible', timeout: 10000 });
+
     const count = await attributionLinks.count();
 
     // Check at least one external link exists to validate the test

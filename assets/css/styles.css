@@ -4,10 +4,11 @@
   --panel-background: rgba(255, 255, 255, 0.65); /* More translucent for better glass effect */
   --text-primary: #2A2622; /* Rich Charcoal */
   --text-secondary: #6B635B; /* Warm Stone */
-  --accent-color: #C87955; /* Soft Terracotta - Darkened for AA Contrast */
-  --accent-secondary: #8DA88B; /* Muted Sage - Darkened */
+  /* FIX: A11Y-001 - Darkened colors for better contrast (WCAG AA) */
+  --accent-color: #A85935; /* Soft Terracotta - Darkened */
+  --accent-secondary: #5D785B; /* Muted Sage - Darkened */
   --accent-tertiary: #EBE0D6; /* Warm Sand */
-  --accent-quaternary: #B0A08A; /* Taupe - Darkened for UI elements */
+  --accent-quaternary: #7A6A5A; /* Taupe - Darkened for UI elements */
   --highlight-color: #F4DDB0; /* Muted Gold */
   --shadow-color: rgba(42, 38, 34, 0.06);
 
