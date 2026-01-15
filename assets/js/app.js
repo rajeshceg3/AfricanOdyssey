@@ -166,9 +166,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Ensure overlay is removed from accessibility tree after transition
         setTimeout(() => {
-            welcomeOverlay.style.display = 'none';
-            // FIX: UX-006 - Move focus to map container so keyboard users can navigate immediately
-            mapContainer.focus();
+          welcomeOverlay.style.display = 'none';
+          // FIX: UX-006 - Move focus to map container so keyboard users can navigate immediately
+          mapContainer.focus();
         }, 1200); // Matches CSS transition duration
 
         // Trigger markers only after interaction to save resources and align with user intent
