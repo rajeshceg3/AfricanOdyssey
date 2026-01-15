@@ -177,6 +177,7 @@ body {
   transition: all 0.5s var(--magnetic-easing);
   opacity: 0;
   transform: translateY(20px);
+  translate: var(--tx, 0px) var(--ty, 0px);
   animation: fadeInText 1.4s var(--easing-curve) 1.3s forwards;
   position: relative;
   overflow: hidden;

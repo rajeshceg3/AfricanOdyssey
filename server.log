@@ -1,0 +1,7 @@
+127.0.0.1 - - [15/Jan/2026 03:42:30] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [15/Jan/2026 03:42:30] "GET /assets/css/styles.css HTTP/1.1" 200 -
+127.0.0.1 - - [15/Jan/2026 03:42:30] "GET /assets/js/app.js HTTP/1.1" 200 -
+127.0.0.1 - - [15/Jan/2026 03:42:30] "GET /assets/js/map-utils.js HTTP/1.1" 200 -
+127.0.0.1 - - [15/Jan/2026 03:42:30] "GET /assets/js/data.js HTTP/1.1" 200 -
+127.0.0.1 - - [15/Jan/2026 03:42:30] "GET /assets/js/ui-utils.js HTTP/1.1" 200 -
+127.0.0.1 - - [15/Jan/2026 03:42:30] "GET /assets/data/wonders.json HTTP/1.1" 200 -

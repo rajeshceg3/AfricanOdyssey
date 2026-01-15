@@ -20,7 +20,28 @@ export const fetchWonders = async () => {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    return await response.json();
+    const data = await response.json();
+
+    // Validate schema
+    if (!Array.isArray(data)) {
+      throw new Error('Data is not an array');
+    }
+
+    return data.filter((item) => {
+      const isValid =
+        item &&
+        typeof item.name === 'string' &&
+        typeof item.location === 'string' &&
+        typeof item.lat === 'number' &&
+        typeof item.lng === 'number' &&
+        typeof item.description === 'string' &&
+        typeof item.image === 'string';
+
+      if (!isValid) {
+        console.warn('Invalid data item skipped:', item);
+      }
+      return isValid;
+    });
   } catch (error) {
     console.error('Error fetching wonders:', error);
     return [];

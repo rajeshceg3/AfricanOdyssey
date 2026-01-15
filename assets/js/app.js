@@ -146,16 +146,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         const isNearEdge = Math.abs(x) > rect.width / 2 - 5 || Math.abs(y) > rect.height / 2 - 5;
 
         if (isNearEdge) {
-           startButton.style.transform = 'translate(0, 0)';
-           return;
+          startButton.style.setProperty('--tx', '0px');
+          startButton.style.setProperty('--ty', '0px');
+          return;
         }
 
         // Limit the movement to avoid it running away
-        startButton.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+        startButton.style.setProperty('--tx', `${x * 0.2}px`);
+        startButton.style.setProperty('--ty', `${y * 0.2}px`);
       });
 
       startButton.addEventListener('mouseleave', () => {
-        startButton.style.transform = 'translate(0, 0)';
+        startButton.style.setProperty('--tx', '0px');
+        startButton.style.setProperty('--ty', '0px');
       });
 
       startButton.addEventListener('click', () => {

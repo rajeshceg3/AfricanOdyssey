@@ -148,7 +148,7 @@ export const openPanel = (panel, closeBtn) => {
     setTimeout(() => {
       closeBtn.focus();
       setupFocusTrap(panel);
-    }, 100);
+        }, 300);
   }
 };
 
