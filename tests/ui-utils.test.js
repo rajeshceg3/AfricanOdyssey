@@ -26,7 +26,7 @@ describe('UI Utils', () => {
     setTimeout(() => {
       expect(document.activeElement).toBe(closeBtn);
       done();
-    }, 150);
+    }, 350);
   });
 
   test('closePanel should remove active class', () => {

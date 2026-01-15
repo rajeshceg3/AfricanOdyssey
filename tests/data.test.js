@@ -4,16 +4,17 @@ import { fetchWonders } from '../assets/js/data.js';
 global.fetch = jest.fn(() =>
   Promise.resolve({
     ok: true,
-    json: () => Promise.resolve([
-      {
-        name: 'Serengeti National Park',
-        location: 'Tanzania',
-        lat: -2.3333,
-        lng: 34.8333,
-        description: 'Test Description',
-        image: 'https://example.com/image.jpg'
-      }
-    ]),
+    json: () =>
+      Promise.resolve([
+        {
+          name: 'Serengeti National Park',
+          location: 'Tanzania',
+          lat: -2.3333,
+          lng: 34.8333,
+          description: 'Test Description',
+          image: 'https://example.com/image.jpg',
+        },
+      ]),
   })
 );
 

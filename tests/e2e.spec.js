@@ -96,13 +96,13 @@ test.describe('African Odyssey', () => {
     expect(count).toBeGreaterThan(0);
 
     for (let i = 0; i < count; i++) {
-        const link = attributionLinks.nth(i);
-        const target = await link.getAttribute('target');
-        if (target === '_blank') {
-            const rel = await link.getAttribute('rel');
-            expect(rel).toContain('noopener');
-            expect(rel).toContain('noreferrer');
-        }
+      const link = attributionLinks.nth(i);
+      const target = await link.getAttribute('target');
+      if (target === '_blank') {
+        const rel = await link.getAttribute('rel');
+        expect(rel).toContain('noopener');
+        expect(rel).toContain('noreferrer');
+      }
     }
   });
 });
