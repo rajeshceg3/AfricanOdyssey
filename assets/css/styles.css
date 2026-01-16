@@ -196,6 +196,8 @@ body {
   transform: translateY(20px);
   translate: var(--tx, 0px) var(--ty, 0px);
   animation: fadeInText 1.4s var(--easing-curve) 1.3s forwards;
+  /* FIX: UX-004 - Added transition for smooth return to center */
+  transition: translate 0.4s ease-out, transform 0.4s ease-out, color 0.3s, border-color 0.3s;
   position: relative;
   overflow: hidden;
   z-index: 1;
@@ -898,5 +900,44 @@ body {
   /* Hide zoom controls when panel is active on mobile to prevent overlap */
   body.panel-active .custom-zoom-controls {
     transform: translateY(200%);
+  }
+}
+/* ---------------------------------------------------------
+   Reduced Motion
+   --------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Specific overrides where we might want to disable transforms completely */
+  .custom-marker:hover,
+  .custom-marker.active,
+  #info-panel,
+  .panel-image,
+  .info-title,
+  .info-subtitle,
+  .info-body,
+  .zoom-btn:hover {
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Ensure panel is visible/hidden correctly without transform */
+  #info-panel {
+    transform: none !important;
+    display: none;
+    opacity: 0;
+  }
+
+  #info-panel.active {
+    display: block !important;
+    opacity: 1 !important;
   }
 }

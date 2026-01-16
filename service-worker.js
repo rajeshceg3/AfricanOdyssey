@@ -1,6 +1,5 @@
 const CACHE_NAME = 'african-odyssey-v1';
 const ASSETS_TO_CACHE = [
-  './',
   './index.html',
   './assets/css/styles.css',
   './assets/js/app.js',
@@ -78,9 +77,11 @@ self.addEventListener('fetch', (event) => {
             cache.put(event.request, networkResponse.clone());
             return networkResponse;
           })
-          .catch(() => {
-            // Network failure, just return whatever we have (or nothing)
-            // If we have no cache and no network, this will fail naturally.
+          .catch((error) => {
+            console.error('Fetch failed:', error);
+            // If we have no cache and no network, we can't do much.
+            // Throwing allows the browser to handle the error (e.g., showing offline page if nav, or 404/failure for resource)
+            throw error;
           });
 
         // Return cached response if available, otherwise wait for network
