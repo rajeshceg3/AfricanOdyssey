@@ -1,6 +1,7 @@
 import { fetchWonders } from './data.js';
 import * as MapUtils from './map-utils.js';
 import * as UIUtils from './ui-utils.js';
+import { TourManager } from './tour-utils.js';
 
 /**
  * Main application logic for the African Odyssey map.
@@ -118,6 +119,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Initialize Markers logic
     const initMarkers = () => {
       markers = MapUtils.addMarkers(map, naturalWonders, handleMarkerClick);
+
+      // Initialize Tour Manager
+      try {
+        const tourManager = new TourManager(map, naturalWonders, markers);
+        tourManager.init();
+      } catch (e) {
+        console.error('Failed to initialize tour:', e);
+      }
     };
 
     // Event Bindings
