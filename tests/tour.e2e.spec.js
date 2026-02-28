@@ -11,6 +11,9 @@ test.describe('Guided Tour Feature', () => {
     await startBtn.waitFor({ state: 'visible' });
     await startBtn.click();
 
+    // Wait for cinematic transition
+    await page.waitForTimeout(2000);
+
     // Wait for map to settle and tour button to appear
     const tourBtn = page.locator('#start-tour-btn');
     await tourBtn.waitFor({ state: 'visible', timeout: 10000 });

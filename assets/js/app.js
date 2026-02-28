@@ -170,18 +170,51 @@ document.addEventListener('DOMContentLoaded', async () => {
         startButton.style.setProperty('--ty', '0px');
       });
 
-      startButton.addEventListener('click', () => {
-        welcomeOverlay.classList.add('hidden');
+      startButton.addEventListener('click', (e) => {
+        // --- ADD: Ripple Effect (Micro-interaction without clutter) ---
+        const rect = startButton.getBoundingClientRect();
+        const diameter = Math.max(startButton.clientWidth, startButton.clientHeight);
+        const radius = diameter / 2;
+        const circle = document.createElement('span');
+
+        circle.style.width = circle.style.height = `${diameter}px`;
+        circle.style.left = `${e.clientX - rect.left - radius}px`;
+        circle.style.top = `${e.clientY - rect.top - radius}px`;
+        circle.classList.add('ripple');
+
+        const existingRipple = startButton.querySelector('.ripple');
+        if (existingRipple) {
+          existingRipple.remove();
+        }
+        startButton.appendChild(circle);
+        // --- END ADD ---
+
+        // Give the ripple 300ms to be seen before hiding the overlay
+        setTimeout(() => {
+          welcomeOverlay.classList.add('hidden');
+
+          // --- ADD: Cinematic Map Transition ---
+          // Smoothly zoom in to the map on start
+          if (map) {
+            const currentZoom = map.getZoom();
+            map.flyTo(map.getCenter(), currentZoom + 1, {
+              animate: true,
+              duration: 2.0 // 2 seconds for a cinematic feel
+            });
+          }
+          // --- END ADD ---
+        }, 300);
 
         // Ensure overlay is removed from accessibility tree after transition
         setTimeout(() => {
           welcomeOverlay.style.display = 'none';
           // FIX: UX-006 - Move focus to map container so keyboard users can navigate immediately
           mapContainer.focus();
-        }, 1200); // Matches CSS transition duration
+        }, 1500); // Matches CSS transition duration (1200ms) + 300ms ripple delay
 
         // Trigger markers only after interaction to save resources and align with user intent
-        setTimeout(initMarkers, 800);
+        // Delay marker init to let the cinematic zoom run its course mostly
+        setTimeout(initMarkers, 1800);
       });
     } else {
       // Fallback if button missing
