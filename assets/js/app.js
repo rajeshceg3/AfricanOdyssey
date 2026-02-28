@@ -2,6 +2,8 @@ import { fetchWonders } from './data.js';
 import * as MapUtils from './map-utils.js';
 import * as UIUtils from './ui-utils.js';
 import { TourManager } from './tour-utils.js';
+import { initParticles, initParallax } from './visual-utils.js';
+import { audioEngine } from './audio-utils.js';
 
 /**
  * Main application logic for the African Odyssey map.
@@ -16,6 +18,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   const zoomOutBtn = document.getElementById('zoom-out');
   const mapContainer = document.getElementById('map');
   const startButton = document.getElementById('start-journey-btn');
+  const audioToggleBtn = document.getElementById('audio-toggle-btn');
+  const audioIconOn = document.getElementById('audio-icon-on');
+  const audioIconOff = document.getElementById('audio-icon-off');
+
+  // Initialize visual depth effects
+  initParticles('welcome-overlay', 40);
+  initParallax('welcome-overlay', 'h1, p, .start-button');
 
   let map;
   let markers = [];
@@ -64,11 +73,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       // 1. Move Map
       MapUtils.flyToLocation(map, wonder.lat, wonder.lng, 7);
 
-      // 2. Update UI
+      // 2. Play Interaction Sound
+      audioEngine.playInteractionSound('click');
+
+      // 3. Update UI
       UIUtils.updatePanelContent(infoPanelContent, wonder);
       UIUtils.openPanel(infoPanel, panelCloseBtn);
 
-      // 3. Update Markers Visual State
+      // 4. Update Markers Visual State
       MapUtils.highlightMarker(markerInstance, markers);
       activeMarker = markerInstance;
 
@@ -83,6 +95,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const handleClosePanel = () => {
       // 1. Close UI
       UIUtils.closePanel(infoPanel);
+
+      // 2. Play Interaction Sound
+      audioEngine.playInteractionSound('close');
 
       // 2. Reset Focus to Marker if active
       // FIX: UX-005 - Restore focus to the marker button for accessibility
@@ -139,6 +154,22 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (e.key === 'Escape') handleClosePanel();
     });
 
+    // Audio Toggle Logic
+    if (audioToggleBtn) {
+      audioToggleBtn.addEventListener('click', () => {
+        const isMuted = audioEngine.toggleMute();
+        if (isMuted) {
+          audioIconOn.style.display = 'none';
+          audioIconOff.style.display = 'block';
+          audioToggleBtn.setAttribute('aria-label', 'Unmute Audio');
+        } else {
+          audioIconOn.style.display = 'block';
+          audioIconOff.style.display = 'none';
+          audioToggleBtn.setAttribute('aria-label', 'Mute Audio');
+        }
+      });
+    }
+
     // UX Enhancement: Start Button Logic
     if (startButton) {
       // Magnetic Effect Script
@@ -171,6 +202,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
 
       startButton.addEventListener('click', (e) => {
+        // Initialize and start audio engine on user interaction
+        audioEngine.init();
+        audioEngine.playInteractionSound('click');
+        // Small delay to allow click sound to be heard before ambient starts
+        setTimeout(() => audioEngine.playAmbient(), 500);
+
         // --- ADD: Ripple Effect (Micro-interaction without clutter) ---
         const rect = startButton.getBoundingClientRect();
         const diameter = Math.max(startButton.clientWidth, startButton.clientHeight);
@@ -199,7 +236,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const currentZoom = map.getZoom();
             map.flyTo(map.getCenter(), currentZoom + 1, {
               animate: true,
-              duration: 2.0 // 2 seconds for a cinematic feel
+              duration: 2.0, // 2 seconds for a cinematic feel
             });
           }
           // --- END ADD ---

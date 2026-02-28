@@ -161,7 +161,9 @@ export class TourManager {
            </div>
         </div>
 
-        <button class="tour-more-btn reset-button" aria-expanded="false" aria-controls="tour-details-${this.currentStep}">
+        <button class="tour-more-btn reset-button" aria-expanded="false" aria-controls="tour-details-${
+          this.currentStep
+        }">
           Tell me more
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="6 9 12 15 18 9"></polyline>
@@ -170,13 +172,17 @@ export class TourManager {
       </div>
 
       <div class="tour-controls">
-        <button class="tour-nav-btn prev reset-button" ${this.currentStep === 0 ? 'disabled' : ''} aria-label="Previous Stop">
+        <button class="tour-nav-btn prev reset-button" ${
+          this.currentStep === 0 ? 'disabled' : ''
+        } aria-label="Previous Stop">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="15 18 9 12 15 6"></polyline>
           </svg>
         </button>
 
-        <button class="tour-nav-btn next reset-button" aria-label="${this.currentStep === this.data.length - 1 ? 'Finish Tour' : 'Next Stop'}">
+        <button class="tour-nav-btn next reset-button" aria-label="${
+          this.currentStep === this.data.length - 1 ? 'Finish Tour' : 'Next Stop'
+        }">
           ${this.currentStep === this.data.length - 1 ? 'Finish' : 'Next'}
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="9 18 15 12 9 6"></polyline>
