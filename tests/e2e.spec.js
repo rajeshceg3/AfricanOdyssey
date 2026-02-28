@@ -22,14 +22,18 @@ test.describe('African Odyssey', () => {
     // Start journey
     await page.locator('#start-journey-btn').click();
 
-    // Wait for markers to appear (simulated by timeout in app.js)
-    // Note: The app has a 500ms timeout after click.
-    await page.locator('.custom-marker').first().waitFor({ state: 'visible', timeout: 5000 });
+    // Wait for cinematic map transition and markers to appear (simulated by timeout in app.js)
+    // Delay marker init is now 1800ms to let the cinematic zoom run.
+    await page.waitForTimeout(2500); // 1800ms init + animation time
+    await page.locator('.custom-marker').first().waitFor({ state: 'visible', timeout: 8000 });
 
     // Find a marker. We need to be careful as they are created dynamically.
     // The markers have class 'custom-marker'.
     const marker = page.locator('.custom-marker').first();
     await expect(marker).toBeVisible();
+
+    // Give it a little more time to fully finish its entrance animation to ensure interactability
+    await page.waitForTimeout(500);
 
     // Store the marker for focus check later
     // Note: Playwright locators are strict, so we reuse the locator.

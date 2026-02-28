@@ -240,6 +240,27 @@ body {
   outline-offset: 4px;
 }
 
+#start-journey-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+#start-journey-btn .ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple 600ms linear;
+  background-color: rgba(255, 255, 255, 0.4);
+  pointer-events: none;
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
 @keyframes titleReveal {
   0% {
     opacity: 0;
@@ -431,7 +452,7 @@ body {
   background: inherit;
   opacity: 0.6;
   z-index: -1;
-  animation: pulseInner 2s infinite ease-in-out;
+  animation: pulseInner 2.5s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 /* Outer Ripple (Expansion) */
@@ -447,7 +468,7 @@ body {
   border: 1px solid var(--accent-color);
   opacity: 0;
   z-index: -2;
-  animation: pulseOuter 3s infinite ease-out;
+  animation: pulseOuter 3.5s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .custom-marker:hover {
