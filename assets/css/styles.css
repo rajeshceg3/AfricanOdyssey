@@ -120,6 +120,51 @@ body {
   clip-path: circle(0% at 50% 50%);
 }
 
+/* Dust Motes / Fireflies Particle System */
+.dust-mote {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--size);
+  height: var(--size);
+  background: radial-gradient(circle, rgba(255, 230, 200, 0.8) 0%, rgba(255, 230, 200, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(var(--x), var(--y));
+  animation: floatMote var(--duration) linear var(--delay) infinite,
+    glowMote 4s ease-in-out var(--delay) infinite alternate;
+  z-index: 1; /* Behind text, above background */
+  mix-blend-mode: screen;
+}
+
+@keyframes floatMote {
+  0% {
+    transform: translate(var(--x), var(--y));
+  }
+  33% {
+    transform: translate(calc(var(--x) + 5vw), calc(var(--y) - 5vh));
+  }
+  66% {
+    transform: translate(calc(var(--x) - 3vw), calc(var(--y) - 10vh));
+  }
+  100% {
+    transform: translate(calc(var(--x) + 2vw), calc(var(--y) - 15vh));
+  }
+}
+
+@keyframes glowMote {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: var(--opacity);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 #welcome-overlay h1 {
   font-family: var(--font-display);
   font-size: var(--h1-size);
@@ -771,6 +816,33 @@ body {
   transform: scale(0.95);
 }
 
+/* Audio Toggle Button */
+#audio-toggle-btn {
+  width: 56px;
+  height: 56px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  color: var(--text-primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.4s var(--bounce-easing);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+#audio-toggle-btn:hover {
+  transform: translateY(-5px) scale(1.05);
+  background: #fff;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+  color: var(--accent-color);
+}
+
+#audio-toggle-btn:active {
+  transform: scale(0.95);
+}
+
 /* Tooltips - Floating Tag */
 .custom-leaflet-tooltip {
   background: rgba(255, 255, 255, 0.95);
@@ -944,7 +1016,9 @@ body {
   .info-title,
   .info-subtitle,
   .info-body,
-  .zoom-btn:hover {
+  .zoom-btn:hover,
+  #audio-toggle-btn:hover,
+  .dust-mote {
     transform: none !important;
     animation: none !important;
     transition: none !important;
@@ -995,7 +1069,7 @@ body {
 .tour-fab .tooltip {
   position: absolute;
   right: 70px;
-  background: rgba(255,255,255,0.9);
+  background: rgba(255, 255, 255, 0.9);
   padding: 6px 12px;
   border-radius: 6px;
   color: var(--text-primary);
@@ -1094,7 +1168,7 @@ body {
 .tour-expanded-content {
   margin-top: 16px;
   padding-top: 16px;
-  border-top: 1px solid rgba(0,0,0,0.05);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
   animation: fadeIn 0.4s ease;
 }
 .tour-expanded-content.hidden {
@@ -1133,7 +1207,7 @@ body {
   justify-content: space-between;
   margin-top: 12px;
   padding-top: 16px;
-  border-top: 1px solid rgba(0,0,0,0.05);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .tour-nav-btn {
@@ -1150,7 +1224,7 @@ body {
   color: var(--text-secondary);
 }
 .tour-nav-btn.prev:hover:not([disabled]) {
-  background: rgba(0,0,0,0.03);
+  background: rgba(0, 0, 0, 0.03);
   color: var(--text-primary);
 }
 .tour-nav-btn.prev[disabled] {
