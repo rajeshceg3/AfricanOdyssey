@@ -55,12 +55,14 @@ export const updatePanelContent = (contentContainer, wonder) => {
   // Remove loading state when image loads
   img.onload = () => {
     imgContainer.classList.remove('loading');
+    img.classList.add('loaded');
   };
 
   // FIX: SEC-003 & PERF-001 - Handle error safely via JS property
   img.onerror = () => {
     img.onerror = null; // Prevent infinite loop
     imgContainer.classList.remove('loading'); // Remove spinner even on error
+    img.classList.add('loaded'); // Ensure it fades in even if it's the fallback svg
     img.src =
       "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='rgba(255,255,255,0.1)'%3E%3Cpath d='M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z'/%3E%3C/svg%3E";
   };

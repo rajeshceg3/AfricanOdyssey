@@ -70,8 +70,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
       }
 
-      // 1. Move Map
-      MapUtils.flyToLocation(map, wonder.lat, wonder.lng, 7);
+      // 1. Move Map (with offset for panel on larger screens)
+      const isMobile = window.innerWidth <= 768;
+      // If not mobile, offset by roughly half the panel width (panel is max 550px)
+      const offsetX = isMobile ? 0 : -275;
+      MapUtils.flyToLocation(map, wonder.lat, wonder.lng, 7, { x: offsetX, y: 0 });
 
       // 2. Play Interaction Sound
       audioEngine.playInteractionSound('click');
