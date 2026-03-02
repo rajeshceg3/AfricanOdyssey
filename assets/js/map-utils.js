@@ -132,17 +132,27 @@ export const resetMarkers = (allMarkers) => {
 };
 
 /**
- * Flies the map to a specific location, respecting reduced motion.
+ * Flies the map to a specific location, respecting reduced motion and an optional pixel offset.
  * @param {Object} map - The Leaflet map instance.
  * @param {number} lat - Latitude.
  * @param {number} lng - Longitude.
  * @param {number} zoom - Zoom level.
+ * @param {Object} offset - Optional pixel offset for centering (e.g., { x: 275, y: 0 }).
  */
-export const flyToLocation = (map, lat, lng, zoom = 7) => {
+export const flyToLocation = (map, lat, lng, zoom = 7, offset = { x: 0, y: 0 }) => {
   // FIX: A11Y-002 - Respect reduced motion preference
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  map.flyTo([lat, lng], zoom, {
+  let targetLatLng = [lat, lng];
+
+  if (offset.x !== 0 || offset.y !== 0) {
+    const targetPoint = map.project([lat, lng], zoom);
+    targetPoint.x -= offset.x;
+    targetPoint.y -= offset.y;
+    targetLatLng = map.unproject(targetPoint, zoom);
+  }
+
+  map.flyTo(targetLatLng, zoom, {
     animate: !prefersReducedMotion,
     duration: prefersReducedMotion ? 0 : 1.5,
     easeLinearity: 0.1,
