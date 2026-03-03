@@ -1286,3 +1286,55 @@ body {
     padding: 20px;
   }
 }
+
+/* Info Panel Staggered Animations */
+.panel-text-content > * {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+#info-panel.active .panel-text-content > *:nth-child(1) {
+  animation: fadeUp 0.6s var(--easing-curve) forwards;
+  animation-delay: 0.1s;
+}
+
+#info-panel.active .panel-text-content > *:nth-child(2) {
+  animation: fadeUp 0.6s var(--easing-curve) forwards;
+  animation-delay: 0.2s;
+}
+
+#info-panel.active .panel-text-content > *:nth-child(3) {
+  animation: fadeUp 0.6s var(--easing-curve) forwards;
+  animation-delay: 0.3s;
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Info Panel Image Parallax */
+.panel-image-container {
+  overflow: hidden;
+  position: relative;
+}
+
+.panel-image {
+  /* Increase size slightly to allow for parallax movement without clipping */
+  width: 110%;
+  height: 110%;
+  left: -5%;
+  top: -5%;
+  position: relative;
+  transition: transform 0.1s linear; /* Smooth micro-movements */
+}
+
+/* Hide Controls During Tour */
+body.tour-active .custom-zoom-controls {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(20px) !important;
+  transition: all 0.3s ease-out;
+}

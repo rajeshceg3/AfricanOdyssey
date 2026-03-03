@@ -134,9 +134,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       map.scrollWheelZoom.enable();
     };
 
+    // Initialize UX Enhancements
+    UIUtils.initPanelImageParallax(infoPanel);
+
     // Initialize Markers logic
     const initMarkers = () => {
-      markers = MapUtils.addMarkers(map, naturalWonders, handleMarkerClick);
+      markers = MapUtils.addMarkers(
+        map,
+        naturalWonders,
+        handleMarkerClick,
+        () => audioEngine.playInteractionSound('hover')
+      );
 
       // Initialize Tour Manager
       try {

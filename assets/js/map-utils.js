@@ -42,9 +42,10 @@ export const initMap = (elementId) => {
  * @param {Object} map - The Leaflet map instance.
  * @param {Array} data - Array of wonder objects.
  * @param {Function} onMarkerClick - Callback function when a marker is clicked.
+ * @param {Function} onMarkerHover - Callback function when a marker is hovered.
  * @returns {Array} Array of created Leaflet markers.
  */
-export const addMarkers = (map, data, onMarkerClick) => {
+export const addMarkers = (map, data, onMarkerClick, onMarkerHover = () => {}) => {
   const markers = [];
   data.forEach((wonder, index) => {
     // FIX: SEC-002 - Create element programmatically
@@ -80,10 +81,18 @@ export const addMarkers = (map, data, onMarkerClick) => {
       opacity: 1,
     });
 
-    marker.getElement().addEventListener('click', () => {
-      // Prevent event propagation if needed, but Leaflet handles it usually.
-      // e.stopPropagation();
+    marker.on('click', () => {
       onMarkerClick(wonder, marker);
+    });
+
+    marker.on('mouseover', () => {
+      const element = marker.getElement();
+      if (element) {
+        const markerBtnEl = element.querySelector('.custom-marker');
+        if (markerBtnEl && !markerBtnEl.classList.contains('active')) {
+          onMarkerHover(wonder, marker);
+        }
+      }
     });
 
     markers.push(marker);

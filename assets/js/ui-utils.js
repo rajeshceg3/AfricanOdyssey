@@ -238,3 +238,40 @@ export const showToast = (message, type = 'error') => {
     setTimeout(() => toast.remove(), 300);
   }, 5000);
 };
+
+/**
+ * Initializes a subtle parallax effect on the panel image based on mouse movement over the panel.
+ * @param {HTMLElement} panel - The info panel element.
+ */
+export const initPanelImageParallax = (panel) => {
+  if (!panel) return;
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) return;
+
+  panel.addEventListener('mousemove', (e) => {
+    const img = panel.querySelector('.panel-image');
+    if (!img) return;
+
+    const rect = panel.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5; // -0.5 to 0.5
+    const y = (e.clientY - rect.top) / rect.height - 0.5; // -0.5 to 0.5
+
+    // Subtle translation
+    const tx = x * -20; // Reverse direction for parallax feel
+    const ty = y * -20;
+
+    img.style.transform = `translate(${tx}px, ${ty}px)`;
+  });
+
+  // Reset on leave
+  panel.addEventListener('mouseleave', () => {
+    const img = panel.querySelector('.panel-image');
+    if (!img) return;
+    img.style.transform = 'translate(0px, 0px)';
+    img.style.transition = 'transform 0.5s ease-out';
+    setTimeout(() => {
+      if(img) img.style.transition = 'transform 0.1s linear';
+    }, 500);
+  });
+};
