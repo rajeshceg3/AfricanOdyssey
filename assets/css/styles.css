@@ -34,6 +34,30 @@
   --magnetic-easing: cubic-bezier(0.25, 1, 0.5, 1);
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Midnight / Starlit Theme */
+    --background-color: #1a1a24;
+    --panel-background: rgba(30, 30, 40, 0.75);
+    --text-primary: #f0ebe5;
+    --text-secondary: #b0a08a;
+    --accent-color: #e09f7d; /* Lighter terracotta for contrast against dark */
+    --accent-secondary: #a0baa0;
+    --accent-tertiary: #3a3a44;
+    --accent-quaternary: #4a4a54;
+    --highlight-color: #f4ddb0;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+
+    --gradient-overlay: linear-gradient(
+      to bottom,
+      rgba(26, 26, 36, 0) 0%,
+      rgba(26, 26, 36, 1) 100%
+    );
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-highlight: rgba(255, 255, 255, 0.1);
+  }
+}
+
 ::selection {
   background: var(--accent-color);
   color: white;
@@ -345,6 +369,12 @@ body {
   background-color: var(--background-color);
   /* Vintage Filter - slightly refined */
   filter: sepia(0.2) contrast(1.02) saturate(0.9);
+}
+
+@media (prefers-color-scheme: dark) {
+  #map {
+    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+  }
 }
 
 /* FIX: UX-00X - Removed display:none to allow attribution to be visible */
@@ -730,6 +760,34 @@ body {
   animation: slideUpFade 0.9s var(--easing-curve) 0.5s forwards;
 }
 
+/* Wikipedia Link */
+.info-wiki-link,
+.tour-wiki-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent-color);
+  font-weight: 500;
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideUpFade 0.9s var(--easing-curve) 0.6s forwards;
+}
+.tour-wiki-link {
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  opacity: 1;
+  transform: none;
+  animation: none;
+}
+.info-wiki-link:hover,
+.tour-wiki-link:hover {
+  text-decoration: underline;
+}
+
 /* Decorative Corner */
 .decorative-svg-corner {
   position: absolute;
@@ -970,6 +1028,9 @@ body {
 }
 .custom-toast.toast-error {
   background: #d9534f; /* Soft red */
+}
+.custom-toast.toast-info {
+  background: var(--accent-color); /* Soft Terracotta */
 }
 
 /* ---------------------------------------------------------

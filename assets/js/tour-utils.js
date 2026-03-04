@@ -30,12 +30,12 @@ export class TourManager {
     const startBtn = document.createElement('button');
     startBtn.id = 'start-tour-btn';
     startBtn.className = 'tour-fab reset-button';
-    startBtn.setAttribute('aria-label', 'Start Guided Tour');
+    startBtn.setAttribute('aria-label', 'Start Guided Tour (T)');
     startBtn.innerHTML = `
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polygon points="5 3 19 12 5 21 5 3"></polygon>
       </svg>
-      <span class="tooltip">Start Tour</span>
+      <span class="tooltip">Start Tour (T)</span>
     `;
 
     startBtn.addEventListener('click', this.startTour);
@@ -135,7 +135,7 @@ export class TourManager {
     this.tourCard.innerHTML = `
       <div class="tour-header">
         <span class="tour-progress">Stop ${this.currentStep + 1} of ${this.data.length}</span>
-        <button class="tour-close-btn reset-button" aria-label="Exit Tour">
+        <button class="tour-close-btn reset-button" aria-label="Exit Tour (T / Esc)">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -156,6 +156,11 @@ export class TourManager {
 
         <div class="tour-expanded-content hidden" id="tour-details-${this.currentStep}">
            <p>${wonder.description}</p>
+           ${
+             wonder.wikiLink
+               ? `<a href="${wonder.wikiLink}" target="_blank" rel="noopener noreferrer" class="tour-wiki-link">Read more on Wikipedia <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></a>`
+               : ''
+           }
            <div class="tour-image-preview">
              <img src="${wonder.image}" alt="${wonder.name}" loading="lazy" />
            </div>

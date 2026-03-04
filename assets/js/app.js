@@ -139,11 +139,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Initialize Markers logic
     const initMarkers = () => {
-      markers = MapUtils.addMarkers(
-        map,
-        naturalWonders,
-        handleMarkerClick,
-        () => audioEngine.playInteractionSound('hover')
+      markers = MapUtils.addMarkers(map, naturalWonders, handleMarkerClick, () =>
+        audioEngine.playInteractionSound('hover')
       );
 
       // Initialize Tour Manager
@@ -160,26 +157,62 @@ document.addEventListener('DOMContentLoaded', async () => {
     zoomInBtn.addEventListener('click', () => map.zoomIn());
     zoomOutBtn.addEventListener('click', () => map.zoomOut());
 
+    // Audio Toggle Logic
+    const handleAudioToggle = () => {
+      if (!audioToggleBtn) return;
+      const isMuted = audioEngine.toggleMute();
+      if (isMuted) {
+        audioIconOn.style.display = 'none';
+        audioIconOff.style.display = 'block';
+        audioToggleBtn.setAttribute('aria-label', 'Unmute Audio (M)');
+      } else {
+        audioIconOn.style.display = 'block';
+        audioIconOff.style.display = 'none';
+        audioToggleBtn.setAttribute('aria-label', 'Mute Audio (M)');
+      }
+    };
+
+    if (audioToggleBtn) {
+      audioToggleBtn.addEventListener('click', handleAudioToggle);
+    }
+
     // Keyboard Accessibility
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') handleClosePanel();
-    });
+      // Don't trigger if user is typing in an input (though we have none currently)
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
-    // Audio Toggle Logic
-    if (audioToggleBtn) {
-      audioToggleBtn.addEventListener('click', () => {
-        const isMuted = audioEngine.toggleMute();
-        if (isMuted) {
-          audioIconOn.style.display = 'none';
-          audioIconOff.style.display = 'block';
-          audioToggleBtn.setAttribute('aria-label', 'Unmute Audio');
-        } else {
-          audioIconOn.style.display = 'block';
-          audioIconOff.style.display = 'none';
-          audioToggleBtn.setAttribute('aria-label', 'Mute Audio');
+      switch (e.key) {
+        case 'Escape': {
+          handleClosePanel();
+          const endTourBtn = document.querySelector('.tour-close-btn');
+          if (endTourBtn) endTourBtn.click();
+          break;
         }
-      });
-    }
+        case 'm':
+        case 'M':
+          handleAudioToggle();
+          break;
+        case '+':
+        case '=':
+          map.zoomIn();
+          break;
+        case '-':
+        case '_':
+          map.zoomOut();
+          break;
+        case 't':
+        case 'T': {
+          const startTourBtn = document.getElementById('start-tour-btn');
+          if (startTourBtn && !startTourBtn.classList.contains('hidden')) {
+            startTourBtn.click();
+          } else {
+            const endTourBtn = document.querySelector('.tour-close-btn');
+            if (endTourBtn) endTourBtn.click();
+          }
+          break;
+        }
+      }
+    });
 
     // UX Enhancement: Start Button Logic
     if (startButton) {
@@ -293,4 +326,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
   }
+
+  // Offline / Online Status Indicator
+  window.addEventListener('offline', () => {
+    UIUtils.showToast('You are offline. Showing cached data.', 'info');
+  });
+
+  window.addEventListener('online', () => {
+    UIUtils.showToast('You are back online.', 'info');
+  });
 });

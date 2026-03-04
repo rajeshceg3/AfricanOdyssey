@@ -163,7 +163,7 @@ export const flyToLocation = (map, lat, lng, zoom = 7, offset = { x: 0, y: 0 }) 
 
   map.flyTo(targetLatLng, zoom, {
     animate: !prefersReducedMotion,
-    duration: prefersReducedMotion ? 0 : 1.5,
-    easeLinearity: 0.1,
+    duration: prefersReducedMotion ? 0 : 2.5,
+    easeLinearity: 0.25,
   });
 };
