@@ -318,13 +318,17 @@ body {
   position: absolute;
   border-radius: 50%;
   transform: scale(0);
-  animation: ripple 600ms linear;
+  animation: ripple 800ms cubic-bezier(0.4, 0, 0.2, 1);
   background-color: rgba(255, 255, 255, 0.4);
   pointer-events: none;
 }
 
 @keyframes ripple {
-  to {
+  0% {
+    transform: scale(0);
+    opacity: 0.8;
+  }
+  100% {
     transform: scale(4);
     opacity: 0;
   }
@@ -367,13 +371,13 @@ body {
   left: 0;
   z-index: 1;
   background-color: var(--background-color);
-  /* Vintage Filter - slightly refined */
-  filter: sepia(0.2) contrast(1.02) saturate(0.9);
+  /* Vintage Filter - significantly refined for 'earthy golden hour' */
+  filter: sepia(0.4) contrast(1.1) saturate(1.2) hue-rotate(-10deg) brightness(0.95);
 }
 
 @media (prefers-color-scheme: dark) {
   #map {
-    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+    filter: invert(100%) hue-rotate(180deg) sepia(0.3) brightness(85%) contrast(1.1) saturate(0.8);
   }
 }
 
@@ -408,7 +412,7 @@ body {
   background-color: var(--accent-color);
   border-radius: 50%;
   border: 2px solid #fff;
-  box-shadow: 0 4px 15px rgba(224, 159, 125, 0.4); /* Matches accent-color */
+  box-shadow: 0 4px 15px rgba(200, 121, 85, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.5); /* Improved depth */
   transition: all 0.6s var(--bounce-easing);
   opacity: 0;
   position: relative;
@@ -521,13 +525,13 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 100%;
-  height: 100%;
+  width: 120%;
+  height: 120%;
   border-radius: 50%;
-  background: inherit;
-  opacity: 0.6;
+  background: radial-gradient(circle, var(--accent-color) 0%, rgba(200, 121, 85, 0) 70%);
+  opacity: 0.8;
   z-index: -1;
-  animation: pulseInner 2.5s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  animation: pulseInner 3s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 /* Outer Ripple (Expansion) */
@@ -537,13 +541,13 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 300%;
-  height: 300%;
+  width: 400%;
+  height: 400%;
   border-radius: 50%;
-  border: 1px solid var(--accent-color);
+  border: 1.5px solid var(--accent-color);
   opacity: 0;
   z-index: -2;
-  animation: pulseOuter 3.5s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  animation: pulseOuter 4s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .custom-marker:hover {
@@ -579,22 +583,22 @@ body {
   0%,
   100% {
     transform: translate(-50%, -50%) scale(1);
-    opacity: 0.6;
+    opacity: 0.8;
   }
   50% {
-    transform: translate(-50%, -50%) scale(1.4);
-    opacity: 0.3;
+    transform: translate(-50%, -50%) scale(1.6);
+    opacity: 0.2;
   }
 }
 
 @keyframes pulseOuter {
   0% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0.5;
-    border-width: 1px;
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0.6;
+    border-width: 1.5px;
   }
   100% {
-    transform: translate(-50%, -50%) scale(3.5);
+    transform: translate(-50%, -50%) scale(4);
     opacity: 0;
     border-width: 0px;
   }
@@ -686,12 +690,12 @@ body {
   height: 100%;
   object-fit: cover;
   transform: scale(1.15);
-  transition: opacity 0.5s ease, transform 2s var(--easing-curve);
+  transition: opacity 0.5s ease, transform 4s var(--easing-curve); /* Slower, Ken Burns feel */
   opacity: 0;
 }
-/* When panel is active, image settles */
+/* When panel is active, image settles slightly but keeps some scale for the Ken Burns effect */
 #info-panel.active .panel-image {
-  transform: scale(1);
+  transform: scale(1.05); /* Stops zooming at a slight scale */
 }
 .panel-image.loaded {
   opacity: 1;

@@ -54,8 +54,12 @@ class AudioEngine {
   playAmbient() {
     if (!this.isInitialized || this.ambientSource) return;
 
-    // Create a subtle wind/drone using noise and a lowpass filter
-    const bufferSize = this.ctx.sampleRate * 2;
+    // Richer Ambient Soundscape:
+    // Layer 1: Low drone for depth
+    // Layer 2: Filtered noise for wind
+
+    // Wind noise buffer
+    const bufferSize = this.ctx.sampleRate * 5; // 5 seconds of noise for seamless looping
     const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
     const data = buffer.getChannelData(0);
     for (let i = 0; i < bufferSize; i++) {
@@ -66,28 +70,61 @@ class AudioEngine {
     this.ambientSource.buffer = buffer;
     this.ambientSource.loop = true;
 
+    // Filter to shape the wind
     const filter = this.ctx.createBiquadFilter();
     filter.type = 'lowpass';
-    filter.frequency.value = 400;
+    filter.frequency.value = 300;
+    filter.Q.value = 0.5;
 
+    // LFO to modulate wind frequency (gusts)
     const lfo = this.ctx.createOscillator();
     lfo.type = 'sine';
-    lfo.frequency.value = 0.1; // slow wind gusts
+    lfo.frequency.value = 0.05; // very slow, long gusts
 
     const lfoGain = this.ctx.createGain();
-    lfoGain.gain.value = 300;
+    lfoGain.gain.value = 250;
 
     lfo.connect(lfoGain);
     lfoGain.connect(filter.frequency);
     lfo.start();
 
-    // Volume envelope to fade in
+    // LFO to modulate wind amplitude slightly
+    const ampLFO = this.ctx.createOscillator();
+    ampLFO.type = 'sine';
+    ampLFO.frequency.value = 0.08;
+
+    const ampLFOGain = this.ctx.createGain();
+    ampLFOGain.gain.value = 0.2;
+    ampLFO.connect(ampLFOGain);
+
+    const windGain = this.ctx.createGain();
+    windGain.gain.value = 0.5; // Base wind level
+    ampLFOGain.connect(windGain.gain);
+    ampLFO.start();
+
+    // Drone oscillator for warm base
+    const drone = this.ctx.createOscillator();
+    drone.type = 'sine';
+    drone.frequency.value = 65.41; // C2
+
+    const droneGain = this.ctx.createGain();
+    droneGain.gain.value = 0.05; // Very subtle drone
+
+    drone.connect(droneGain);
+    droneGain.connect(this.ambientGain);
+    drone.start();
+
+    // Volume envelope to fade everything in smoothly
     const envGain = this.ctx.createGain();
     envGain.gain.setValueAtTime(0, this.ctx.currentTime);
-    envGain.gain.linearRampToValueAtTime(0.15, this.ctx.currentTime + 3);
+    envGain.gain.linearRampToValueAtTime(0.3, this.ctx.currentTime + 5); // 5 second fade in
 
     this.ambientSource.connect(filter);
-    filter.connect(envGain);
+    filter.connect(windGain);
+    windGain.connect(envGain);
+
+    // Both layers go through the envelope
+    droneGain.connect(envGain);
     envGain.connect(this.ambientGain);
 
     this.ambientSource.start();
