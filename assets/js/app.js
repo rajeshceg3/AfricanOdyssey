@@ -225,19 +225,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         const x = e.clientX - rect.left - rect.width / 2;
         const y = e.clientY - rect.top - rect.height / 2;
 
-        // Deadzone check: only magnetize if we are well inside to avoid edge jitter
-        // If mouse is too close to edge, treat as 0
-        const isNearEdge = Math.abs(x) > rect.width / 2 - 5 || Math.abs(y) > rect.height / 2 - 5;
+        // Improved Deadzone and Interpolation logic
+        const deadzoneX = rect.width / 2 - 10;
+        const deadzoneY = rect.height / 2 - 10;
 
-        if (isNearEdge) {
-          startButton.style.setProperty('--tx', '0px');
-          startButton.style.setProperty('--ty', '0px');
-          return;
+        // Smoothly falloff near edges
+        let normalizedX = x;
+        let normalizedY = y;
+
+        if (Math.abs(x) > deadzoneX) {
+          normalizedX = x > 0 ? deadzoneX : -deadzoneX;
+        }
+        if (Math.abs(y) > deadzoneY) {
+          normalizedY = y > 0 ? deadzoneY : -deadzoneY;
         }
 
-        // Limit the movement to avoid it running away
-        startButton.style.setProperty('--tx', `${x * 0.2}px`);
-        startButton.style.setProperty('--ty', `${y * 0.2}px`);
+        // Limit the movement to avoid it running away, increase intensity slightly for impact
+        startButton.style.setProperty('--tx', `${normalizedX * 0.3}px`);
+        startButton.style.setProperty('--ty', `${normalizedY * 0.3}px`);
       });
 
       startButton.addEventListener('mouseleave', () => {

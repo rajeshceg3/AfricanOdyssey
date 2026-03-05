@@ -109,9 +109,10 @@ export class TourManager {
     const marker = this.markers[index]; // Assuming direct mapping
 
     // 1. Map Movement (Smoother for tour)
-    // We use the existing flyTo, but maybe we want a custom zoom for tours?
-    // Let's stick to consistent 7 for now, or use map-utils default.
-    MapUtils.flyToLocation(this.map, wonder.lat, wonder.lng, 7);
+    // For the guided tour, offset so the tour card doesn't obscure the marker
+    const isMobile = window.innerWidth <= 768;
+    const offsetY = isMobile ? 150 : 200; // Offset up slightly to account for the bottom card
+    MapUtils.flyToLocation(this.map, wonder.lat, wonder.lng, 6, { x: 0, y: offsetY });
 
     // 2. Highlight Marker
     if (marker) {
@@ -120,6 +121,11 @@ export class TourManager {
 
     // 3. Update Card Content (Progressive Disclosure)
     this.renderCardContent(wonder);
+
+    // Play subtle interaction sound
+    import('./audio-utils.js').then(({ audioEngine }) => {
+      audioEngine.playInteractionSound('hover');
+    });
   }
 
   renderCardContent(wonder) {
