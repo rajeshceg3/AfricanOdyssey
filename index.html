@@ -10,8 +10,9 @@
         default-src 'self';
         script-src 'self' https://unpkg.com;
         style-src 'self' https://unpkg.com https://fonts.googleapis.com;
-        img-src 'self' https://images.unsplash.com data: https://*.basemaps.cartocdn.com;
-        connect-src 'self' https://*.basemaps.cartocdn.com;
+        img-src 'self' https://images.unsplash.com data: blob:;
+        connect-src 'self' https://tiles.openfreemap.org;
+        worker-src 'self';
         font-src 'self' https://fonts.gstatic.com;
         object-src 'none';
         base-uri 'self';
@@ -29,6 +30,7 @@
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="anonymous"
     />
+    <link rel="stylesheet" href="vendor/maplibre/maplibre-gl.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -134,6 +136,11 @@
       integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
       crossorigin="anonymous"
     ></script>
+
+    <!-- Warm-paper basemap: MapLibre GL + Leaflet bridge + worlds shared style -->
+    <script src="vendor/maplibre/maplibre-gl-csp.js"></script>
+    <script src="vendor/maplibre/leaflet-maplibre-gl.js"></script>
+    <script src="vendor/warm-map/style.js"></script>
 
     <!-- Main Application Logic -->
     <script type="module" src="assets/js/app.js"></script>
